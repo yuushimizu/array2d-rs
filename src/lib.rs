@@ -60,7 +60,7 @@ impl<T, U> Clip<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
     }
 }
 
-impl<'a, T, U> Grid<T, U> for Array2D<T, U> {
+impl<T, U> Grid<T, U> for Array2D<T, U> {
     fn size(&self) -> Size<U> {
         self.grid.size()
     }
