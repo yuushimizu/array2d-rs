@@ -7,12 +7,12 @@ pub mod types;
 
 pub(crate) mod slice_grid;
 
-pub use grid::{Clip, ClipMut, Grid, GridMut};
+pub use grid::{Crop, CropMut, Grid, GridMut};
 pub use slice2d::{Slice2D, Slice2DMut};
 pub use types::{Index, Size};
 
 /// ```
-/// use array2d::{Array2D, Slice2D, Slice2DMut, Grid, GridMut, Clip, ClipMut, Size, Index};
+/// use array2d::{Array2D, Slice2D, Slice2DMut, Grid, GridMut, Crop, CropMut, Size, Index};
 /// struct Space;
 /// let size = Size::<Space>::new(48, 32);
 /// let mut a = Array2D::new(size, 0);
@@ -20,9 +20,9 @@ pub use types::{Index, Size};
 /// s[Index::new(3, 8)] = 123;
 /// let sl = a.as_slice2d();
 /// assert_eq!(123, sl[Index::new(3, 8)]);
-/// let mut c = a.clip_mut(Index::new(10, 12)..Index::new(20, 24));
+/// let mut c = a.crop_mut(Index::new(10, 12)..Index::new(20, 24));
 /// c[Index::new(3, 5)] = 1000;
-/// c.clip(..Index::new(3, 3));
+/// c.crop(..Index::new(3, 3));
 /// assert_eq!(1000, a[Index::new(13, 17)]);
 /// ```
 pub struct Array2D<T, U = euclid::UnknownUnit> {
@@ -54,9 +54,9 @@ impl<T, U> ops::IndexMut<Index<U>> for Array2D<T, U> {
     }
 }
 
-impl<T, U> Clip<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
-    fn clip(&self, range: ops::Range<Index<U>>) -> Slice2D<T, U> {
-        self.grid.clip(range)
+impl<T, U> Crop<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
+    fn crop(&self, range: ops::Range<Index<U>>) -> Slice2D<T, U> {
+        self.grid.crop(range)
     }
 }
 
@@ -78,9 +78,9 @@ impl<T, U> Grid<T, U> for Array2D<T, U> {
     }
 }
 
-impl<T, U> ClipMut<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
-    fn clip_mut(&mut self, range: ops::Range<Index<U>>) -> Slice2DMut<T, U> {
-        self.grid.clip_mut(range)
+impl<T, U> CropMut<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
+    fn crop_mut(&mut self, range: ops::Range<Index<U>>) -> Slice2DMut<T, U> {
+        self.grid.crop_mut(range)
     }
 }
 
