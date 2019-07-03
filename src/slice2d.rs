@@ -1,4 +1,3 @@
-use crate::grid::lines::Lines;
 use crate::grid::{Grid, GridMut};
 use crate::index_range::IndexRange;
 use crate::slice_grid::SliceGrid;
@@ -25,28 +24,28 @@ impl<'a, T, U> ops::Index<Index<U>> for Slice2D<'a, T, U> {
     }
 }
 
-impl<'a, T, U> Grid<T, U> for Slice2D<'a, T, U> {
-    fn size(&self) -> Size<U> {
+impl<'a, T, U> Grid for Slice2D<'a, T, U> {
+    type Item = T;
+
+    type Unit = U;
+
+    fn size(&self) -> Size<Self::Unit> {
         self.grid.size()
     }
 
-    fn get(&self, index: Index<U>) -> Option<&T> {
+    fn get(&self, index: Index<Self::Unit>) -> Option<&Self::Item> {
         self.grid.get(index)
     }
 
-    fn as_slice2d(&self) -> Slice2D<T, U> {
+    fn as_slice2d(&self) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.as_slice2d()
     }
 
-    fn line(&self, y: usize) -> Option<&[T]> {
+    fn line(&self, y: usize) -> Option<&[Self::Item]> {
         self.grid.line(y)
     }
 
-    fn lines(&self) -> Lines<T, U> {
-        self.grid.lines()
-    }
-
-    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+    fn crop(&self, range: impl IndexRange<Self::Unit>) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.crop(range)
     }
 }
@@ -77,46 +76,49 @@ impl<'a, T, U> ops::IndexMut<Index<U>> for Slice2DMut<'a, T, U> {
     }
 }
 
-impl<'a, T, U> Grid<T, U> for Slice2DMut<'a, T, U> {
-    fn size(&self) -> Size<U> {
+impl<'a, T, U> Grid for Slice2DMut<'a, T, U> {
+    type Item = T;
+
+    type Unit = U;
+
+    fn size(&self) -> Size<Self::Unit> {
         self.grid.size()
     }
 
-    fn get(&self, index: Index<U>) -> Option<&T> {
+    fn get(&self, index: Index<Self::Unit>) -> Option<&Self::Item> {
         self.grid.get(index)
     }
 
-    fn as_slice2d(&self) -> Slice2D<T, U> {
+    fn as_slice2d(&self) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.as_slice2d()
     }
 
-    fn line(&self, y: usize) -> Option<&[T]> {
+    fn line(&self, y: usize) -> Option<&[Self::Item]> {
         self.grid.line(y)
     }
 
-    fn lines(&self) -> Lines<T, U> {
-        self.grid.lines()
-    }
-
-    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+    fn crop(&self, range: impl IndexRange<Self::Unit>) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.crop(range)
     }
 }
 
-impl<'a, T, U> GridMut<T, U> for Slice2DMut<'a, T, U> {
-    fn get_mut(&mut self, index: Index<U>) -> Option<&mut T> {
+impl<'a, T, U> GridMut for Slice2DMut<'a, T, U> {
+    fn get_mut(&mut self, index: Index<Self::Unit>) -> Option<&mut Self::Item> {
         self.grid.get_mut(index)
     }
 
-    fn as_slice2d_mut(&mut self) -> Slice2DMut<T, U> {
+    fn as_slice2d_mut(&mut self) -> Slice2DMut<Self::Item, Self::Unit> {
         self.grid.as_slice2d_mut()
     }
 
-    fn line_mut(&mut self, y: usize) -> Option<&mut [T]> {
+    fn line_mut(&mut self, y: usize) -> Option<&mut [Self::Item]> {
         self.grid.line_mut(y)
     }
 
-    fn crop_mut(&mut self, range: impl IndexRange<U>) -> Slice2DMut<T, U> {
+    fn crop_mut(
+        &mut self,
+        range: impl IndexRange<Self::Unit>,
+    ) -> Slice2DMut<Self::Item, Self::Unit> {
         self.grid.crop_mut(range)
     }
 }

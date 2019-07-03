@@ -1,36 +1,28 @@
 
-use crate::types::Size;
+use crate::grid::Grid;
 use std::iter;
 
-pub struct Lines<'a, T, U> {
-    items: &'a [T],
-    size: Size<U>,
-    base_width: usize,
+pub struct Lines<'a, G: Grid + ?Sized> {
+    grid: &'a G,
     current: usize,
 }
 
-impl<'a, T, U> Lines<'a, T, U> {
-    pub fn new(items: &'a [T], size: Size<U>, base_width: usize) -> Self {
-        Self {
-            items,
-            size,
-            base_width,
-            current: 0,
-        }
+impl<'a, G: Grid + ?Sized> Lines<'a, G> {
+    pub fn new(grid: &'a G) -> Self {
+        Self { grid, current: 0 }
     }
 }
 
-impl<'a, T, U> iter::Iterator for Lines<'a, T, U> {
-    type Item = &'a [T];
+impl<'a, G: Grid + ?Sized> iter::Iterator for Lines<'a, G> {
+    type Item = &'a [G::Item];
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.current >= self.size.height {
+        if self.current >= self.grid.size().height {
             None
         } else {
-            let start = self.current * self.base_width;
-            let result = Some(&self.items[start..start + self.size.width]);
+            let line = self.grid.line(self.current);
             self.current += 1;
-            result
+            line
         }
     }
 }

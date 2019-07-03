@@ -12,7 +12,6 @@ pub use grid::{Grid, GridMut};
 pub use slice2d::{Slice2D, Slice2DMut};
 pub use types::{Index, Size};
 
-use grid::lines::Lines;
 use index_range::IndexRange;
 
 /// ```
@@ -60,46 +59,49 @@ impl<T, U> ops::IndexMut<Index<U>> for Array2D<T, U> {
     }
 }
 
-impl<T, U> Grid<T, U> for Array2D<T, U> {
-    fn size(&self) -> Size<U> {
+impl<T, U> Grid for Array2D<T, U> {
+    type Item = T;
+
+    type Unit = U;
+
+    fn size(&self) -> Size<Self::Unit> {
         self.grid.size()
     }
 
-    fn get(&self, index: Index<U>) -> Option<&T> {
+    fn get(&self, index: Index<Self::Unit>) -> Option<&Self::Item> {
         self.grid.get(index)
     }
 
-    fn as_slice2d(&self) -> Slice2D<T, U> {
+    fn as_slice2d(&self) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.as_slice2d()
     }
 
-    fn line(&self, y: usize) -> Option<&[T]> {
+    fn line(&self, y: usize) -> Option<&[Self::Item]> {
         self.grid.line(y)
     }
 
-    fn lines(&self) -> Lines<T, U> {
-        self.grid.lines()
-    }
-
-    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+    fn crop(&self, range: impl IndexRange<Self::Unit>) -> Slice2D<Self::Item, Self::Unit> {
         self.grid.crop(range)
     }
 }
 
-impl<T, U> GridMut<T, U> for Array2D<T, U> {
-    fn get_mut(&mut self, index: Index<U>) -> Option<&mut T> {
+impl<T, U> GridMut for Array2D<T, U> {
+    fn get_mut(&mut self, index: Index<Self::Unit>) -> Option<&mut Self::Item> {
         self.grid.get_mut(index)
     }
 
-    fn as_slice2d_mut(&mut self) -> Slice2DMut<T, U> {
+    fn as_slice2d_mut(&mut self) -> Slice2DMut<Self::Item, Self::Unit> {
         self.grid.as_slice2d_mut()
     }
 
-    fn line_mut(&mut self, y: usize) -> Option<&mut [T]> {
+    fn line_mut(&mut self, y: usize) -> Option<&mut [Self::Item]> {
         self.grid.line_mut(y)
     }
 
-    fn crop_mut(&mut self, range: impl IndexRange<U>) -> Slice2DMut<T, U> {
+    fn crop_mut(
+        &mut self,
+        range: impl IndexRange<Self::Unit>,
+    ) -> Slice2DMut<Self::Item, Self::Unit> {
         self.grid.crop_mut(range)
     }
 }
