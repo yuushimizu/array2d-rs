@@ -2,19 +2,21 @@ use euclid;
 use std::ops;
 
 pub mod grid;
+pub mod index_range;
 pub mod slice2d;
 pub mod types;
 
 pub(crate) mod slice_grid;
 
-pub use grid::{Crop, CropMut, Grid, GridMut};
+pub use grid::{Grid, GridMut};
 pub use slice2d::{Slice2D, Slice2DMut};
 pub use types::{Index, Size};
 
 use grid::lines::Lines;
+use index_range::IndexRange;
 
 /// ```
-/// use array2d::{Array2D, Slice2D, Slice2DMut, Grid, GridMut, Crop, CropMut, Size, Index};
+/// use array2d::{Array2D, Slice2D, Slice2DMut, Grid, GridMut, Size, Index};
 /// struct Space;
 /// let size = Size::<Space>::new(48, 32);
 /// let mut a = Array2D::new(size, 0);
@@ -58,12 +60,6 @@ impl<T, U> ops::IndexMut<Index<U>> for Array2D<T, U> {
     }
 }
 
-impl<T, U> Crop<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
-    fn crop(&self, range: ops::Range<Index<U>>) -> Slice2D<T, U> {
-        self.grid.crop(range)
-    }
-}
-
 impl<T, U> Grid<T, U> for Array2D<T, U> {
     fn size(&self) -> Size<U> {
         self.grid.size()
@@ -84,11 +80,9 @@ impl<T, U> Grid<T, U> for Array2D<T, U> {
     fn lines(&self) -> Lines<T, U> {
         self.grid.lines()
     }
-}
 
-impl<T, U> CropMut<T, U, ops::Range<Index<U>>> for Array2D<T, U> {
-    fn crop_mut(&mut self, range: ops::Range<Index<U>>) -> Slice2DMut<T, U> {
-        self.grid.crop_mut(range)
+    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+        self.grid.crop(range)
     }
 }
 
@@ -103,5 +97,9 @@ impl<T, U> GridMut<T, U> for Array2D<T, U> {
 
     fn line_mut(&mut self, y: usize) -> Option<&mut [T]> {
         self.grid.line_mut(y)
+    }
+
+    fn crop_mut(&mut self, range: impl IndexRange<U>) -> Slice2DMut<T, U> {
+        self.grid.crop_mut(range)
     }
 }

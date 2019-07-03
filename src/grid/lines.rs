@@ -1,6 +1,7 @@
 
 use crate::types::Size;
 use std::iter;
+
 pub struct Lines<'a, T, U> {
     items: &'a [T],
     size: Size<U>,

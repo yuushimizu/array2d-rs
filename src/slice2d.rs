@@ -1,5 +1,6 @@
 use crate::grid::lines::Lines;
-use crate::grid::{Crop, CropMut, Grid, GridMut};
+use crate::grid::{Grid, GridMut};
+use crate::index_range::IndexRange;
 use crate::slice_grid::SliceGrid;
 use crate::types::{Index, Size};
 use std::ops;
@@ -24,12 +25,6 @@ impl<'a, T, U> ops::Index<Index<U>> for Slice2D<'a, T, U> {
     }
 }
 
-impl<'a, T, U> Crop<T, U, ops::Range<Index<U>>> for Slice2D<'a, T, U> {
-    fn crop(&self, range: ops::Range<Index<U>>) -> Slice2D<T, U> {
-        self.grid.crop(range)
-    }
-}
-
 impl<'a, T, U> Grid<T, U> for Slice2D<'a, T, U> {
     fn size(&self) -> Size<U> {
         self.grid.size()
@@ -49,6 +44,10 @@ impl<'a, T, U> Grid<T, U> for Slice2D<'a, T, U> {
 
     fn lines(&self) -> Lines<T, U> {
         self.grid.lines()
+    }
+
+    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+        self.grid.crop(range)
     }
 }
 
@@ -78,12 +77,6 @@ impl<'a, T, U> ops::IndexMut<Index<U>> for Slice2DMut<'a, T, U> {
     }
 }
 
-impl<'a, T, U> Crop<T, U, ops::Range<Index<U>>> for Slice2DMut<'a, T, U> {
-    fn crop(&self, range: ops::Range<Index<U>>) -> Slice2D<T, U> {
-        self.grid.crop(range)
-    }
-}
-
 impl<'a, T, U> Grid<T, U> for Slice2DMut<'a, T, U> {
     fn size(&self) -> Size<U> {
         self.grid.size()
@@ -104,11 +97,9 @@ impl<'a, T, U> Grid<T, U> for Slice2DMut<'a, T, U> {
     fn lines(&self) -> Lines<T, U> {
         self.grid.lines()
     }
-}
 
-impl<'a, T, U> CropMut<T, U, ops::Range<Index<U>>> for Slice2DMut<'a, T, U> {
-    fn crop_mut(&mut self, range: ops::Range<Index<U>>) -> Slice2DMut<T, U> {
-        self.grid.crop_mut(range)
+    fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T, U> {
+        self.grid.crop(range)
     }
 }
 
@@ -123,5 +114,9 @@ impl<'a, T, U> GridMut<T, U> for Slice2DMut<'a, T, U> {
 
     fn line_mut(&mut self, y: usize) -> Option<&mut [T]> {
         self.grid.line_mut(y)
+    }
+
+    fn crop_mut(&mut self, range: impl IndexRange<U>) -> Slice2DMut<T, U> {
+        self.grid.crop_mut(range)
     }
 }
