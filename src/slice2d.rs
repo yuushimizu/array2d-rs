@@ -9,9 +9,9 @@ pub struct Slice2D<'a, T, U> {
 }
 
 impl<'a, T, U> Slice2D<'a, T, U> {
-    pub fn new(items: &'a [T], size: Size<U>, base_line_size: usize) -> Self {
+    pub fn new(items: &'a [T], size: Size<U>, base_width: usize) -> Self {
         Self {
-            grid: SliceGrid::new(items, size, base_line_size),
+            grid: SliceGrid::new(items, size, base_width),
         }
     }
 }
@@ -57,9 +57,9 @@ pub struct Slice2DMut<'a, T, U> {
 }
 
 impl<'a, T, U> Slice2DMut<'a, T, U> {
-    pub fn new(items: &'a mut [T], size: Size<U>, base_line_size: usize) -> Self {
+    pub fn new(items: &'a mut [T], size: Size<U>, base_width: usize) -> Self {
         Self {
-            grid: SliceGrid::new(items, size, base_line_size),
+            grid: SliceGrid::new(items, size, base_width),
         }
     }
 }

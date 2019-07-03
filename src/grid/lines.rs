@@ -4,16 +4,16 @@ use std::iter;
 pub struct Lines<'a, T, U> {
     items: &'a [T],
     size: Size<U>,
-    base_line_size: usize,
+    base_width: usize,
     current: usize,
 }
 
 impl<'a, T, U> Lines<'a, T, U> {
-    pub fn new(items: &'a [T], size: Size<U>, base_line_size: usize) -> Self {
+    pub fn new(items: &'a [T], size: Size<U>, base_width: usize) -> Self {
         Self {
             items,
             size,
-            base_line_size,
+            base_width,
             current: 0,
         }
     }
@@ -26,7 +26,7 @@ impl<'a, T, U> iter::Iterator for Lines<'a, T, U> {
         if self.current >= self.size.height {
             None
         } else {
-            let start = self.current * self.base_line_size;
+            let start = self.current * self.base_width;
             let result = Some(&self.items[start..start + self.size.width]);
             self.current += 1;
             result

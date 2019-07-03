@@ -53,20 +53,20 @@ impl<T> AsMutSlice for Vec<T> {
 pub(crate) struct SliceGrid<T: AsSlice, U> {
     items: T,
     size: Size<U>,
-    base_line_size: usize,
+    base_width: usize,
 }
 
 impl<T: AsSlice, U> SliceGrid<T, U> {
-    pub fn new(items: T, size: Size<U>, base_line_size: usize) -> Self {
+    pub fn new(items: T, size: Size<U>, base_width: usize) -> Self {
         Self {
             items,
             size,
-            base_line_size,
+            base_width,
         }
     }
 
     fn index_at_unchecked(&self, index: Index<U>) -> usize {
-        index.y * self.base_line_size + index.x
+        index.y * self.base_width + index.x
     }
 
     fn in_bounds(&self, index: Index<U>) -> bool {
@@ -121,7 +121,7 @@ impl<T: AsSlice, U> Crop<T::Item, U, ops::Range<Index<U>>> for SliceGrid<T, U> {
         Slice2D::new(
             &self.items.as_slice()[self.index_at_unchecked(start)..self.index_at_unchecked(end)],
             (end - start).to_size(),
-            self.base_line_size,
+            self.base_width,
         )
     }
 }
@@ -137,7 +137,7 @@ impl<T: AsSlice, U> Grid<T::Item, U> for SliceGrid<T, U> {
     }
 
     fn as_slice2d(&self) -> Slice2D<T::Item, U> {
-        Slice2D::new(self.items.as_slice(), self.size, self.base_line_size)
+        Slice2D::new(self.items.as_slice(), self.size, self.base_width)
     }
 
     fn line(&self, y: usize) -> Option<&[T::Item]> {
@@ -146,11 +146,7 @@ impl<T: AsSlice, U> Grid<T::Item, U> for SliceGrid<T, U> {
     }
 
     fn lines(&self) -> Lines<T::Item, U> {
-        Lines::new(
-            self.items.as_slice(),
-            self.size(),
-            self.base_line_size,
-        )
+        Lines::new(self.items.as_slice(), self.size(), self.base_width)
     }
 }
 
@@ -162,7 +158,7 @@ impl<T: AsMutSlice, U> CropMut<T::Item, U, ops::Range<Index<U>>> for SliceGrid<T
         Slice2DMut::new(
             &mut self.items.as_mut_slice()[items_range],
             (end - start).to_size(),
-            self.base_line_size,
+            self.base_width,
         )
     }
 }
@@ -174,7 +170,7 @@ impl<T: AsMutSlice, U> GridMut<T::Item, U> for SliceGrid<T, U> {
     }
 
     fn as_slice2d_mut(&mut self) -> Slice2DMut<T::Item, U> {
-        Slice2DMut::new(self.items.as_mut_slice(), self.size, self.base_line_size)
+        Slice2DMut::new(self.items.as_mut_slice(), self.size, self.base_width)
     }
 
     fn line_mut(&mut self, y: usize) -> Option<&mut [T::Item]> {
