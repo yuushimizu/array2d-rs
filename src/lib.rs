@@ -11,6 +11,8 @@ pub use grid::{Crop, CropMut, Grid, GridMut};
 pub use slice2d::{Slice2D, Slice2DMut};
 pub use types::{Index, Size};
 
+use grid::lines::Lines;
+
 /// ```
 /// use array2d::{Array2D, Slice2D, Slice2DMut, Grid, GridMut, Crop, CropMut, Size, Index};
 /// struct Space;
@@ -24,6 +26,8 @@ pub use types::{Index, Size};
 /// c[Index::new(3, 5)] = 1000;
 /// c.crop(..Index::new(3, 3));
 /// assert_eq!(1000, a[Index::new(13, 17)]);
+/// assert_eq!(32, a.lines().count());
+/// assert_eq!(48, a.lines().next().unwrap().len());
 /// ```
 pub struct Array2D<T, U = euclid::UnknownUnit> {
     grid: slice_grid::SliceGrid<Vec<T>, U>,
@@ -75,6 +79,10 @@ impl<T, U> Grid<T, U> for Array2D<T, U> {
 
     fn line(&self, y: usize) -> Option<&[T]> {
         self.grid.line(y)
+    }
+
+    fn lines(&self) -> Lines<T, U> {
+        self.grid.lines()
     }
 }
 

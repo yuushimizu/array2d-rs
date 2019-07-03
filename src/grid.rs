@@ -3,6 +3,8 @@ use crate::types::{Index, Size};
 use euclid;
 use std::ops;
 
+pub mod lines;
+
 pub trait Crop<T, U, R> {
     fn crop(&self, range: R) -> Slice2D<T, U>;
 }
@@ -19,6 +21,8 @@ pub trait Grid<T, U>: ops::Index<Index<U>> + Crop<T, U, ops::Range<Index<U>>> {
     fn as_slice2d(&self) -> Slice2D<T, U>;
 
     fn line(&self, y: usize) -> Option<&[T]>;
+
+    fn lines(&self) -> lines::Lines<T, U>;
 }
 
 impl<T, U, G: Grid<T, U>> Crop<T, U, ops::RangeInclusive<Index<U>>> for G {

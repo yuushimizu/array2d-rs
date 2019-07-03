@@ -1,3 +1,4 @@
+use crate::grid::lines::Lines;
 use crate::grid::{Crop, CropMut, Grid, GridMut};
 use crate::slice2d::{Slice2D, Slice2DMut};
 use crate::types::{Index, Size};
@@ -142,6 +143,14 @@ impl<T: AsSlice, U> Grid<T::Item, U> for SliceGrid<T, U> {
     fn line(&self, y: usize) -> Option<&[T::Item]> {
         self.index_at(Index::new(0, y))
             .map(|start| &self.items.as_slice()[start..start + self.size.width])
+    }
+
+    fn lines(&self) -> Lines<T::Item, U> {
+        Lines::new(
+            self.items.as_slice(),
+            self.size(),
+            self.base_line_size,
+        )
     }
 }
 

@@ -1,5 +1,6 @@
-use crate::grid::{Grid, GridMut, Crop, CropMut};
-use crate::slice_grid::{SliceGrid};
+use crate::grid::lines::Lines;
+use crate::grid::{Crop, CropMut, Grid, GridMut};
+use crate::slice_grid::SliceGrid;
 use crate::types::{Index, Size};
 use std::ops;
 
@@ -44,6 +45,10 @@ impl<'a, T, U> Grid<T, U> for Slice2D<'a, T, U> {
 
     fn line(&self, y: usize) -> Option<&[T]> {
         self.grid.line(y)
+    }
+
+    fn lines(&self) -> Lines<T, U> {
+        self.grid.lines()
     }
 }
 
@@ -94,6 +99,10 @@ impl<'a, T, U> Grid<T, U> for Slice2DMut<'a, T, U> {
 
     fn line(&self, y: usize) -> Option<&[T]> {
         self.grid.line(y)
+    }
+
+    fn lines(&self) -> Lines<T, U> {
+        self.grid.lines()
     }
 }
 
