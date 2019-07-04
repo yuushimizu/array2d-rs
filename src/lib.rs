@@ -30,6 +30,7 @@ use index_range::IndexRange;
 /// assert_eq!(32, a.lines().count());
 /// assert_eq!(48, a.lines().next().unwrap().len());
 /// ```
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct Array2D<T, U = euclid::UnknownUnit> {
     grid: slice_grid::SliceGrid<Vec<T>, U>,
 }

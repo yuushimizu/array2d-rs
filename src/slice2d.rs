@@ -4,6 +4,7 @@ use crate::slice_grid::SliceGrid;
 use crate::types::{Index, Size};
 use std::ops;
 
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Slice2D<'a, T, U> {
     grid: SliceGrid<&'a [T], U>,
 }
@@ -50,6 +51,7 @@ impl<'a, T, U> Grid for Slice2D<'a, T, U> {
     }
 }
 
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Slice2DMut<'a, T, U> {
     grid: SliceGrid<&'a mut [T], U>,
 }

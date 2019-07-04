@@ -50,6 +50,7 @@ impl<T> AsMutSlice for Vec<T> {
     }
 }
 
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub(crate) struct SliceGrid<T: AsSlice, U> {
     items: T,
     size: Size<U>,

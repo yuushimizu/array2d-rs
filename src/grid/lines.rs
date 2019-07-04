@@ -2,6 +2,7 @@
 use crate::grid::Grid;
 use std::iter;
 
+#[derive(Debug, Clone)]
 pub struct Lines<'a, G: Grid + ?Sized> {
     grid: &'a G,
     current: usize,
