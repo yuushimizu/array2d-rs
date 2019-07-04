@@ -1,21 +1,20 @@
-
-use crate::grid::Grid;
 use std::iter;
+use super::{SliceGrid, AsSlice};
 
 #[derive(Debug, Clone)]
-pub struct Lines<'a, G: Grid + ?Sized> {
-    grid: &'a G,
+pub struct Lines<'a, T: AsSlice + 'a, U> {
+    grid: &'a SliceGrid<T, U>,
     current: usize,
 }
 
-impl<'a, G: Grid + ?Sized> Lines<'a, G> {
-    pub fn new(grid: &'a G) -> Self {
+impl<'a, T: AsSlice + 'a, U> Lines<'a, T, U> {
+    pub fn new(grid: &'a SliceGrid<T, U>) -> Self {
         Self { grid, current: 0 }
     }
 }
 
-impl<'a, G: Grid + ?Sized> iter::Iterator for Lines<'a, G> {
-    type Item = &'a [G::Item];
+impl<'a, T: AsSlice + 'a, U> iter::Iterator for Lines<'a, T, U> {
+    type Item = &'a [T::Item];
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.current >= self.grid.size().height {

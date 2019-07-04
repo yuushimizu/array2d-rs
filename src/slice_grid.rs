@@ -1,57 +1,14 @@
-use crate::grid::{Grid, GridMut};
+pub mod as_slice;
+mod lines;
+
+use as_slice::{AsSlice, AsMutSlice};
 use crate::index_range::IndexRange;
 use crate::slice2d::{Slice2D, Slice2DMut};
 use crate::types::{Index, Size};
 use std::ops;
 
-pub(crate) trait AsSlice {
-    type Item;
-
-    fn as_slice(&self) -> &[Self::Item];
-}
-
-impl<T> AsSlice for &[T] {
-    type Item = T;
-
-    fn as_slice(&self) -> &[Self::Item] {
-        self
-    }
-}
-
-impl<T> AsSlice for &mut [T] {
-    type Item = T;
-
-    fn as_slice(&self) -> &[Self::Item] {
-        self
-    }
-}
-
-pub(crate) trait AsMutSlice: AsSlice {
-    fn as_mut_slice(&mut self) -> &mut [Self::Item];
-}
-
-impl<T> AsMutSlice for &mut [T] {
-    fn as_mut_slice(&mut self) -> &mut [Self::Item] {
-        self
-    }
-}
-
-impl<T> AsSlice for Vec<T> {
-    type Item = T;
-
-    fn as_slice(&self) -> &[Self::Item] {
-        self
-    }
-}
-
-impl<T> AsMutSlice for Vec<T> {
-    fn as_mut_slice(&mut self) -> &mut [Self::Item] {
-        self
-    }
-}
-
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub(crate) struct SliceGrid<T: AsSlice, U> {
+pub struct SliceGrid<T: AsSlice, U> {
     items: T,
     size: Size<U>,
     base_width: usize,
@@ -96,6 +53,39 @@ impl<T: AsSlice, U> SliceGrid<T, U> {
         use euclid_ext::Map2D;
         (index, self.size()).map(|(n, size)| if n >= size { size } else { n })
     }
+
+    pub fn size(&self) -> Size<U> {
+        self.size
+    }
+
+    pub fn get(&self, index: Index<U>) -> Option<&T::Item> {
+        self.index_at(index)
+            .map(|index| &self.items.as_slice()[index])
+    }
+
+    pub fn as_slice2d(&self) -> Slice2D<T::Item, U> {
+        Slice2D::new(self.items.as_slice(), self.size, self.base_width)
+    }
+
+    pub fn line(&self, y: usize) -> Option<&[T::Item]> {
+        self.index_at(Index::new(0, y))
+            .map(|start| &self.items.as_slice()[start..start + self.size.width])
+    }
+
+    pub fn lines(&self) -> impl Iterator<Item = &[T::Item]> {
+        lines::Lines::new(&self)
+    }
+
+    pub fn crop(&self, range: impl IndexRange<U>) -> Slice2D<T::Item, U> {
+        let range = range.normalize(self.size());
+        let start = self.clamp_index(range.start);
+        let end = self.clamp_index(range.end);
+        Slice2D::new(
+            &self.items.as_slice()[self.index_at_unchecked(start)..self.index_at_unchecked(end)],
+            (end - start).to_size(),
+            self.base_width,
+        )
+    }
 }
 
 impl<T: AsSlice, U> ops::Index<Index<U>> for SliceGrid<T, U> {
@@ -115,60 +105,22 @@ impl<T: AsMutSlice, U> ops::IndexMut<Index<U>> for SliceGrid<T, U> {
     }
 }
 
-impl<T: AsSlice, U> Grid for SliceGrid<T, U> {
-    type Item = T::Item;
-
-    type Unit = U;
-
-    fn size(&self) -> Size<Self::Unit> {
-        self.size
-    }
-
-    fn get(&self, index: Index<Self::Unit>) -> Option<&Self::Item> {
-        self.index_at(index)
-            .map(|index| &self.items.as_slice()[index])
-    }
-
-    fn as_slice2d(&self) -> Slice2D<Self::Item, Self::Unit> {
-        Slice2D::new(self.items.as_slice(), self.size, self.base_width)
-    }
-
-    fn line(&self, y: usize) -> Option<&[Self::Item]> {
-        self.index_at(Index::new(0, y))
-            .map(|start| &self.items.as_slice()[start..start + self.size.width])
-    }
-
-    fn crop(&self, range: impl IndexRange<Self::Unit>) -> Slice2D<Self::Item, Self::Unit> {
-        let range = range.normalize(self.size());
-        let start = self.clamp_index(range.start);
-        let end = self.clamp_index(range.end);
-        Slice2D::new(
-            &self.items.as_slice()[self.index_at_unchecked(start)..self.index_at_unchecked(end)],
-            (end - start).to_size(),
-            self.base_width,
-        )
-    }
-}
-
-impl<T: AsMutSlice, U> GridMut for SliceGrid<T, U> {
-    fn get_mut(&mut self, index: Index<Self::Unit>) -> Option<&mut Self::Item> {
+impl<T: AsMutSlice, U> SliceGrid<T, U> {
+    pub fn get_mut(&mut self, index: Index<U>) -> Option<&mut T::Item> {
         self.index_at(index)
             .map(move |index| &mut self.items.as_mut_slice()[index])
     }
 
-    fn as_slice2d_mut(&mut self) -> Slice2DMut<Self::Item, Self::Unit> {
+    pub fn as_slice2d_mut(&mut self) -> Slice2DMut<T::Item, U> {
         Slice2DMut::new(self.items.as_mut_slice(), self.size, self.base_width)
     }
 
-    fn line_mut(&mut self, y: usize) -> Option<&mut [Self::Item]> {
+    pub fn line_mut(&mut self, y: usize) -> Option<&mut [T::Item]> {
         self.index_at(Index::new(0, y))
             .map(move |start| &mut self.items.as_mut_slice()[start..start + self.size.width])
     }
 
-    fn crop_mut(
-        &mut self,
-        range: impl IndexRange<Self::Unit>,
-    ) -> Slice2DMut<Self::Item, Self::Unit> {
+    pub fn crop_mut(&mut self, range: impl IndexRange<U>) -> Slice2DMut<T::Item, U> {
         let range = range.normalize(self.size());
         let start = self.clamp_index(range.start);
         let end = self.clamp_index(range.end);
