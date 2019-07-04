@@ -1,15 +1,14 @@
+pub mod grid;
 pub mod index_range;
 pub mod slice2d;
-
-pub mod grid;
 pub mod types;
+
 use euclid;
+use index_range::IndexRange;
 use std::ops;
 
-pub use self::slice2d::{Slice2D, Slice2DMut};
-pub use self::types::{Index, Size};
-
-use self::index_range::IndexRange;
+pub use slice2d::{Slice2D, Slice2DMut};
+pub use types::{Index, Size};
 
 /// ```
 /// use array2d::{Array2D, Slice2D, Slice2DMut, Size, Index};
