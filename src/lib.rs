@@ -45,6 +45,15 @@ impl<T, U> Array2D<T, U> {
         self.grid.size()
     }
 
+    pub fn index_range(&self) -> ops::Range<Index<U>> {
+        self.grid.index_range()
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = Index<U>> {
+        use euclid_ext::Points;
+        self.index_range().points()
+    }
+
     pub fn get(&self, index: Index<U>) -> Option<&T> {
         self.grid.get(index)
     }

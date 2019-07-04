@@ -19,6 +19,15 @@ impl<'a, T, U> Slice2D<'a, T, U> {
         self.grid.size()
     }
 
+    pub fn index_range(&self) -> ops::Range<Index<U>> {
+        self.grid.index_range()
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = Index<U>> {
+        use euclid_ext::Points;
+        self.index_range().points()
+    }
+
     pub fn get(&self, index: Index<U>) -> Option<&T> {
         self.grid.get(index)
     }
@@ -62,6 +71,15 @@ impl<'a, T, U> Slice2DMut<'a, T, U> {
 
     pub fn size(&self) -> Size<U> {
         self.grid.size()
+    }
+
+    pub fn index_range(&self) -> ops::Range<Index<U>> {
+        self.grid.index_range()
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = Index<U>> {
+        use euclid_ext::Points;
+        self.index_range().points()
     }
 
     pub fn get(&self, index: Index<U>) -> Option<&T> {

@@ -58,6 +58,15 @@ impl<T: AsSlice, U> Grid<T, U> {
         self.size
     }
 
+    pub fn index_range(&self) -> ops::Range<Index<U>> {
+        Index::zero()..Index::zero() + self.size
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = Index<U>> {
+        use euclid_ext::Points;
+        self.index_range().points()
+    }
+
     pub fn get(&self, index: Index<U>) -> Option<&T::Item> {
         self.index_at(index)
             .map(|index| &self.items.as_slice()[index])
