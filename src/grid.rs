@@ -1,20 +1,20 @@
 pub mod as_slice;
 mod lines;
 
-use as_slice::{AsSlice, AsMutSlice};
 use crate::index_range::IndexRange;
 use crate::slice2d::{Slice2D, Slice2DMut};
 use crate::types::{Index, Size};
+use as_slice::{AsMutSlice, AsSlice};
 use std::ops;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct SliceGrid<T: AsSlice, U> {
+pub struct Grid<T: AsSlice, U> {
     items: T,
     size: Size<U>,
     base_width: usize,
 }
 
-impl<T: AsSlice, U> SliceGrid<T, U> {
+impl<T: AsSlice, U> Grid<T, U> {
     pub fn new(items: T, size: Size<U>, base_width: usize) -> Self {
         Self {
             items,
@@ -88,7 +88,7 @@ impl<T: AsSlice, U> SliceGrid<T, U> {
     }
 }
 
-impl<T: AsSlice, U> ops::Index<Index<U>> for SliceGrid<T, U> {
+impl<T: AsSlice, U> ops::Index<Index<U>> for Grid<T, U> {
     type Output = T::Item;
 
     fn index(&self, index: Index<U>) -> &Self::Output {
@@ -98,14 +98,14 @@ impl<T: AsSlice, U> ops::Index<Index<U>> for SliceGrid<T, U> {
     }
 }
 
-impl<T: AsMutSlice, U> ops::IndexMut<Index<U>> for SliceGrid<T, U> {
+impl<T: AsMutSlice, U> ops::IndexMut<Index<U>> for Grid<T, U> {
     fn index_mut(&mut self, index: Index<U>) -> &mut Self::Output {
         let index = self.debug_asserted_index_at(index);
         self.items.as_mut_slice().index_mut(index)
     }
 }
 
-impl<T: AsMutSlice, U> SliceGrid<T, U> {
+impl<T: AsMutSlice, U> Grid<T, U> {
     pub fn get_mut(&mut self, index: Index<U>) -> Option<&mut T::Item> {
         self.index_at(index)
             .map(move |index| &mut self.items.as_mut_slice()[index])

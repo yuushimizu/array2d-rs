@@ -1,7 +1,7 @@
 pub mod index_range;
 pub mod slice2d;
 
-pub mod slice_grid;
+pub mod grid;
 pub mod types;
 use euclid;
 use std::ops;
@@ -29,7 +29,7 @@ use self::index_range::IndexRange;
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct Array2D<T, U = euclid::UnknownUnit> {
-    grid: slice_grid::SliceGrid<Vec<T>, U>,
+    grid: grid::Grid<Vec<T>, U>,
 }
 
 impl<T, U> Array2D<T, U> {
@@ -38,7 +38,7 @@ impl<T, U> Array2D<T, U> {
         T: Clone,
     {
         Self {
-            grid: slice_grid::SliceGrid::new(vec![initial_value; size.area()], size, size.width),
+            grid: grid::Grid::new(vec![initial_value; size.area()], size, size.width),
         }
     }
 

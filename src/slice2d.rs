@@ -1,17 +1,17 @@
+use crate::grid::Grid;
 use crate::index_range::IndexRange;
-use crate::slice_grid::SliceGrid;
 use crate::types::{Index, Size};
 use std::ops;
 
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Slice2D<'a, T, U> {
-    grid: SliceGrid<&'a [T], U>,
+    grid: Grid<&'a [T], U>,
 }
 
 impl<'a, T, U> Slice2D<'a, T, U> {
     pub fn new(items: &'a [T], size: Size<U>, base_width: usize) -> Self {
         Self {
-            grid: SliceGrid::new(items, size, base_width),
+            grid: Grid::new(items, size, base_width),
         }
     }
 
@@ -50,13 +50,13 @@ impl<'a, T, U> ops::Index<Index<U>> for Slice2D<'a, T, U> {
 
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Slice2DMut<'a, T, U> {
-    grid: SliceGrid<&'a mut [T], U>,
+    grid: Grid<&'a mut [T], U>,
 }
 
 impl<'a, T, U> Slice2DMut<'a, T, U> {
     pub fn new(items: &'a mut [T], size: Size<U>, base_width: usize) -> Self {
         Self {
-            grid: SliceGrid::new(items, size, base_width),
+            grid: Grid::new(items, size, base_width),
         }
     }
 

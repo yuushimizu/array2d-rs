@@ -1,14 +1,14 @@
+use super::{AsSlice, Grid};
 use std::iter;
-use super::{SliceGrid, AsSlice};
 
 #[derive(Debug, Clone)]
 pub struct Lines<'a, T: AsSlice + 'a, U> {
-    grid: &'a SliceGrid<T, U>,
+    grid: &'a Grid<T, U>,
     current: usize,
 }
 
 impl<'a, T: AsSlice + 'a, U> Lines<'a, T, U> {
-    pub fn new(grid: &'a SliceGrid<T, U>) -> Self {
+    pub fn new(grid: &'a Grid<T, U>) -> Self {
         Self { grid, current: 0 }
     }
 }
