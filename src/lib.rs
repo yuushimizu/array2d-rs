@@ -8,7 +8,7 @@ use index_range::IndexRange;
 use std::ops;
 
 pub use slice2d::{Slice2D, Slice2DMut};
-pub use types::{Index, Size};
+pub use types::{Index, IndexOffset, Size};
 
 /// ```
 /// use array2d::{Array2D, Slice2D, Slice2DMut, Size, Index};
