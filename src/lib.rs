@@ -26,7 +26,7 @@ pub use types::{Index, Size};
 /// assert_eq!(32, a.lines().count());
 /// assert_eq!(48, a.lines().next().unwrap().len());
 /// ```
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Array2D<T, U = euclid::UnknownUnit> {
     grid: grid::Grid<Vec<T>, U>,
 }

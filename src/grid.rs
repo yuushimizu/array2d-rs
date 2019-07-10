@@ -7,7 +7,7 @@ use crate::types::{Index, Size};
 use as_slice::{AsMutSlice, AsSlice};
 use std::ops;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Grid<T: AsSlice, U> {
     items: T,
     size: Size<U>,

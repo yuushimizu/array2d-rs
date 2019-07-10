@@ -3,7 +3,7 @@ use crate::index_range::IndexRange;
 use crate::types::{Index, Size};
 use std::ops;
 
-#[derive(Debug, Eq, PartialEq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Slice2D<'a, T, U> {
     grid: Grid<&'a [T], U>,
 }
@@ -57,7 +57,7 @@ impl<'a, T, U> ops::Index<Index<U>> for Slice2D<'a, T, U> {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Slice2DMut<'a, T, U> {
     grid: Grid<&'a mut [T], U>,
 }
