@@ -1,9 +1,9 @@
 [package]
 name = "array2d"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Yuu Shimizu <p@yuushimizu.com>"]
 edition = "2018"
 
 [dependencies]
-euclid = "0.19.9"
+euclid = "0.20.1"
 euclid-ext = {git = "https://github.com/yuushimizu/euclid-ext"}

@@ -1,10 +1,10 @@
 use std::ops;
 
-pub type Size<U> = euclid::TypedSize2D<usize, U>;
+pub type Size<U> = euclid::Size2D<usize, U>;
 
-pub type Index<U> = euclid::TypedPoint2D<usize, U>;
+pub type Index<U> = euclid::Point2D<usize, U>;
 
-pub type IndexOffset<U> = euclid::TypedVector2D<isize, U>;
+pub type IndexOffset<U> = euclid::Vector2D<isize, U>;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Array2D<T, U> {
@@ -38,7 +38,7 @@ impl<T, U> Array2D<T, U> {
     pub fn from_constructor(size: Size<U>, f: impl FnMut(Index<U>) -> T) -> Self {
         use euclid_ext::Points;
         Self {
-            items: euclid::TypedRect::from_size(size)
+            items: euclid::Rect::from_size(size)
                 .points()
                 .map(f)
                 .collect::<Vec<_>>(),
@@ -51,7 +51,7 @@ impl<T, U> Array2D<T, U> {
     }
 
     fn in_bounds(&self, index: Index<U>) -> bool {
-        euclid::TypedRect::new(Index::zero(), self.size).contains(&index)
+        euclid::Rect::from_size(self.size).contains(index)
     }
 
     fn index_at(&self, index: Index<U>) -> Option<usize> {
